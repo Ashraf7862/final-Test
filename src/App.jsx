@@ -1,39 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import './darkMode.css';
-
-export const ThemeContext = createContext();
-
-export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(() => {
-    const stored = localStorage.getItem('theme');
-    return stored || 'system';
-  });
-
-  useEffect(() => {
-    const root = document.documentElement;
-    const apply = (t) => {
-      localStorage.setItem('theme', t);
-      if (t === 'system') {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        root.dataset.theme = prefersDark ? 'dark' : 'light';
-      } else {
-        root.dataset.theme = t;
-      }
-    };
-    apply(theme);
-  }, [theme]);
-
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-
-export const useTheme = () => useContext(ThemeContext);
-
-export default function App({ children }) {
-  return (
-    <ThemeProvider>{children}</ThemeProvider>
-  );
-}
+import React, { createContext, useContext, useState, useEffect } from 'react';\n\nexport const ThemeContext = createContext();\n\nexport const ThemeProvider = ({ children }) => {\n  const [theme, setTheme] = useState(() => {\n    if (typeof window === 'undefined') return 'system';\n    const stored = localStorage.getItem('theme');\n    return stored || 'system';\n  });\n\n  useEffect(() => {\n    const root = document.documentElement;\n    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');\n\n    const apply = (t) => {\n      localStorage.setItem('theme', t);\n      if (t === 'system') {\n        const isDark = mediaQuery.matches;\n        root.classList.toggle('dark', isDark);\n        root.dataset.theme = isDark ? 'dark' : 'light';\n      } else {\n        const isDark = t === 'dark';\n        root.classList.toggle('dark', isDark);\n        root.dataset.theme = t;\n      }\n    };\n\n    apply(theme);\n\n    const handler = (e) => {\n      if (theme === 'system') {\n        const isDark = e.matches;\n        root.classList.toggle('dark', isDark);\n        root.dataset.theme = isDark ? 'dark' : 'light';\n      }\n    };\n\n    mediaQuery.addEventListener('change', handler);\n    return () => mediaQuery.removeEventListener('change', handler);\n  }, [theme]);\n\n  return (\n    <ThemeContext.Provider value={{ theme, setTheme }}>\n      {children}\n    </ThemeContext.Provider>\n  );\n};\n\nexport const useTheme = () => useContext(ThemeContext);\n\nexport default function App({ children }) {\n  return (\n    <ThemeProvider>{children}</ThemeProvider>\n  );\n}\n",
+    },
+    {
+      "path": "src/components/ThemeToggle.jsx
