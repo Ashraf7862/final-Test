@@ -9,7 +9,10 @@
 <body>
   <main class="page">
     <section class="card">
-      <div class="eyebrow">WE VALUE YOUR OPINION</div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="eyebrow">WE VALUE YOUR OPINION</div>
+        <button type="button" id="themeToggleBtn" style="width: auto; margin: 0; padding: 6px 14px; font-size: 13px; background: #4169d8; border-radius: 20px;">🌙 Dark Mode</button>
+      </div>
       <h1>Share your feedback</h1>
       <p class="subtitle">Tell us about your experience. Your response is saved securely in our database.</p>
 
@@ -100,6 +103,28 @@
         submitButton.textContent = "Submit feedback";
     }
 });
+
+    // Dark mode toggle functionality
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.body.classList.add("dark-mode");
+        if (themeToggleBtn) themeToggleBtn.textContent = "☀️ Light Mode";
+      } else {
+        document.body.classList.remove("dark-mode");
+        if (themeToggleBtn) themeToggleBtn.textContent = "🌙 Dark Mode";
+      }
+    }
+    const savedTheme = localStorage.getItem("feedback_app_theme");
+    applyTheme(savedTheme === "dark");
+
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener("click", () => {
+        const isDark = !document.body.classList.contains("dark-mode");
+        localStorage.setItem("feedback_app_theme", isDark ? "dark" : "light");
+        applyTheme(isDark);
+      });
+    }
   </script>
 </body>
 </html>
