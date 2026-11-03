@@ -1,1 +1,0 @@
-import React, { useState, useEffect } from \'react\';\nimport { useTheme } from \'../App\';\n\nconst ThemeToggle: React.FC = () => {\n  const { theme, setTheme } = useTheme();\n  const [isToggled, setIsToggled] = useState(false);\n\n  // Toggle between light and dark theme\n  const toggleTheme = () => {\n    setTheme(theme === \'dark\' ? \'light\' : \'dark\
