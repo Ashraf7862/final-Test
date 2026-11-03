@@ -1,50 +1,89 @@
-# Simple Feedback Form
+# Feedback System Enhancement Sprint
 
-A small feedback project using:
-- **Frontend:** HTML, CSS and JavaScript
-- **Backend:** Python with FastAPI
-- **Database:** SQLite
+A comprehensive feedback collection and analysis system built with **Next.js**, **TypeScript**, and **Tailwind CSS**.
 
-## Run on macOS / Windows / Linux
+## Features
 
-1. Open a terminal in this project folder.
-2. Create and activate a virtual environment (recommended):
+1. **Structured Feedback Collection Form** – Validated submission form with Zod schema, required fields, real-time error messaging, character count indicator, and category-specific placeholder text.
+2. **Feedback Analytics Dashboard** – Recharts-based visualizations for rating distribution, category breakdown, sentiment trends, and top feature requests. Includes date range, category, and rating filters plus CSV export.
+3. **Feedback Acknowledgment & Follow-up** – Automated confirmation emails with feedback ID, status tracking (`received`, `triaged`, `planned`, `in_progress`, `shipped`, `closed`), and a user-facing status lookup page.
+4. **Feedback Deduplication & Clustering** – Semantic similarity detection using sentence-transformers embeddings with cosine similarity threshold (0.85) to group related feedback and prevent duplicate feature requests.
+5. **Public Roadmap & Voting Portal** – SSG roadmap page with ISR, optimistic UI upvotes, authentication-gated voting (1 vote per user per item), and status badges.
 
+## Tech Stack
+
+- **Framework:** Next.js (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Charts:** Recharts
+- **Validation:** Zod
+- **Forms:** React Hook Form (optional)
+- **Email:** Resend / SendGrid
+- **Clustering:** sentence-transformers (all-MiniLM-L6-v2) via ONNX runtime
+
+## Project Structure
+
+```
+src/
+  app/
+    dashboard/feedback/page.tsx   # Analytics dashboard
+    roadmap/page.tsx              # Public roadmap
+  api/
+    feedback.ts                   # Feedback submission API
+    votes.ts                      # Voting API
+  components/
+    FeedbackForm.tsx              # Validated feedback form
+    FeedbackCharts.tsx            # Recharts visualizations
+    FeedbackStatus.tsx            # Status lookup component
+    RoadmapCard.tsx               # Roadmap item card
+  lib/
+    feedback-analytics.ts         # Analytics computations
+    email.ts                      # Transactional email helpers
+    feedback-clustering.ts        # Deduplication & clustering logic
+  jobs/
+    cluster-feedback.ts           # Nightly clustering cron job
+  types/
+    feedback.ts                   # TypeScript type definitions
+```
+
+## Getting Started
+
+1. Install dependencies:
    ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
+   npm install
+   # or
+   yarn install
    ```
 
-   On Windows, activate with:
-
-   ```powershell
-   .venv\Scripts\activate
-   ```
-
-3. Install dependencies:
-
+2. Set environment variables (email provider API keys):
    ```bash
-   pip install -r requirements.txt
+   RESEND_API_KEY=your_resend_key
+   # or
+   SENDGRID_API_KEY=your_sendgrid_key
    ```
 
-4. Start the application:
-
+3. Run the development server:
    ```bash
-   uvicorn main:app --reload
+   npm run dev
    ```
 
-5. Open **http://127.0.0.1:8000** in your browser.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## How it works
+## API Endpoints
 
-1. A user enters their name, email, rating and feedback.
-2. JavaScript sends the form data to `POST /api/feedback`.
-3. FastAPI validates the data and inserts it into `feedback.db`.
-4. The database file and table are created automatically on the first run.
+- `POST /api/feedback` – Submit new feedback (validated with Zod)
+- `GET /api/feedback` – List all feedback
+- `POST /api/votes` – Record a vote on a roadmap item
+- `GET /api/votes` – List all votes
 
-## View saved feedback
+## Feedback Statuses
 
-- Open **http://127.0.0.1:8000/api/feedback** to see saved feedback as JSON.
-- Open **http://127.0.0.1:8000/docs** to test the API.
-
-The SQLite database file (`feedback.db`) is created automatically beside `main.py`.
+| Status | Description |
+|--------|-------------|
+| received | Feedback has been received |
+| triaged | Feedback has been reviewed and categorized |
+| planned | Feature is planned for implementation |
+| in_progress | Work is actively underway |
+| shipped | Feature has been released |
+| closed | Feedback is resolved or declined |
+```
