@@ -1,4 +1,4 @@
-# Feedback System Enhancement Sprint
+<!-- Feedback System Enhancement Sprint -->
 
 A comprehensive feedback collection and analysis system built with **Next.js**, **TypeScript**, and **Tailwind CSS**.
 
@@ -35,55 +35,9 @@ src/
     FeedbackForm.tsx              # Validated feedback form
     FeedbackCharts.tsx            # Recharts visualizations
     FeedbackStatus.tsx            # Status lookup component
-    RoadmapCard.tsx               # Roadmap item card
-  lib/
-    feedback-analytics.ts         # Analytics computations
-    email.ts                      # Transactional email helpers
-    feedback-clustering.ts        # Deduplication & clustering logic
-  jobs/
-    cluster-feedback.ts           # Nightly clustering cron job
-  types/
-    feedback.ts                   # TypeScript type definitions
+    RoadmapCard.tsx               # Roadmap item
 ```
 
-## Getting Started
-
-1. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-2. Set environment variables (email provider API keys):
-   ```bash
-   RESEND_API_KEY=your_resend_key
-   # or
-   SENDGRID_API_KEY=your_sendgrid_key
-   ```
-
-3. Run the development server:
-   ```bash
-   npm run dev
-   ```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## API Endpoints
-
-- `POST /api/feedback` – Submit new feedback (validated with Zod)
-- `GET /api/feedback` – List all feedback
-- `POST /api/votes` – Record a vote on a roadmap item
-- `GET /api/votes` – List all votes
-
-## Feedback Statuses
-
-| Status | Description |
-|--------|-------------|
-| received | Feedback has been received |
-| triaged | Feedback has been reviewed and categorized |
-| planned | Feature is planned for implementation |
-| in_progress | Work is actively underway |
-| shipped | Feature has been released |
-| closed | Feedback is resolved or declined |
-```
+--- FILE: requirements.txt ---
+fastapi
+uvicorn[standard]
