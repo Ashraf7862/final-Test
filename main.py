@@ -1,1 +1,1 @@
-<!-- Add color customization logic into the active Python file -->
+Add color customization logic into the active Python file

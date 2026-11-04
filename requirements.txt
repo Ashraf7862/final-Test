@@ -1,2 +1,1 @@
-fastapi
-uvicorn[standard]
+No changes needed in this file
