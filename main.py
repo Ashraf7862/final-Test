@@ -1,41 +1,75 @@
-from flask import Flask, render_template, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from pathlib import Path
+import sqlite3
+from datetime import datetime, timezone
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///feedback.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
 
-db = SQLAlchemy(app)
+BASE_DIR = Path(__file__).resolve().parent
+DB_PATH = BASE_DIR / "feedback.db"
 
-class Feedback(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
-    message = db.Column(db.Text, nullable=False)
+app = FastAPI(title="Simple Feedback App")
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
-        message = request.form['message']
-        feedback = Feedback(name=name, email=email, message=message)
-        db.session.add(feedback)
-        db.session.commit()
-        return jsonify({'message': 'Feedback submitted successfully!'}), 201
-    return render_template('index.html')
 
-@app.route('/submit-feedback', methods=['POST'])
-def submit_feedback():
-    data = request.get_json()
-    name = data.get('name', 'N/A')
-    email = data.get('email', 'N/A')
-    message = data.get('message', 'N/A')
-    feedback = Feedback(name=name, email=email, message=message)
-    db.session.add(feedback)
-    db.session.commit()
-    return jsonify({'message': 'Feedback submitted successfully!'}), 201
+def get_connection():
+    connection = sqlite3.connect(DB_PATH)
+    connection.row_factory = sqlite3.Row
+    return connection
 
-if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
+
+def create_table():
+    with get_connection() as connection:
+        connection.execute("""
+            CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                rating INTEGER NOT NULL,
+                message TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+        """)
+
+
+create_table()
+
+
+class Feedback(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    email: str = Field(min_length=3, max_length=120)
+    rating: int = Field(ge=1, le=5)
+    message: str = Field(min_length=3, max_length=1000)
+
+
+@app.get("/")
+def home():
+    return FileResponse(BASE_DIR / "static" / "index.html")
+
+
+@app.post("/api/feedback")
+def submit_feedback(feedback: Feedback):
+    name = feedback.name.strip()
+    email = feedback.email.strip()
+    message = feedback.message.strip()
+
+    if not name or not email or not message:
+        raise HTTPException(status_code=400, detail="Please fill in every field.")
+
+    with get_connection() as connection:
+        cursor = connection.execute(
+            """INSERT INTO feedback (name, email, rating, message, created_at)
+               VALUES (?, ?, ?, ?, ?)""",
+            (
+                name,
+                email,
+                feedback.rating,
+                message,
+                datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            ),
+        )
+        feedback_id = cursor.lastrowid
+
+    return {"message": "Thank you! Your feedback has been saved.", "id": feedback_id}

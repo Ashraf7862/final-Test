@@ -1,52 +1,187 @@
-#feedback-page {
-  text-align: center;
-  margin-top: 50px;
+* {
+  box-sizing: border-box;
 }
 
-#feedback-form {
-  max-width: 400px;
-  margin: 0 auto;
+:root {
+  --bg-page: linear-gradient(135deg, #eef4ff, #f8faff);
+  --bg-card: #ffffff;
+  --border-card: #e5eaf2;
+  --text-primary: #202938;
+  --text-secondary: #687386;
+  --input-bg: #ffffff;
+  --input-border: #d9e0eb;
+  --card-shadow: 0 14px 45px rgba(30, 55, 90, 0.08);
+  --btn-bg: #315bd4;
+  --btn-hover: #2449b5;
+  --toggle-bg: #f1f5f9;
+  --toggle-border: #cbd5e1;
+  --toggle-text: #334155;
+}
+
+body.dark-mode {
+  --bg-page: linear-gradient(135deg, #0b0f19, #111827);
+  --bg-card: #1e293b;
+  --border-card: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --input-bg: #0f172a;
+  --input-border: #334155;
+  --card-shadow: 0 14px 45px rgba(0, 0, 0, 0.45);
+  --btn-bg: #4f46e5;
+  --btn-hover: #4338ca;
+  --toggle-bg: #334155;
+  --toggle-border: #475569;
+  --toggle-text: #e2e8f0;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
+  background: var(--bg-page);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.page {
+  width: min(100% - 32px, 560px);
+  margin: 56px auto 24px;
+}
+
+.card {
+  background: var(--bg-card);
+  padding: 38px;
+  border: 1px solid var(--border-card);
+  border-radius: 18px;
+  box-shadow: var(--card-shadow);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.eyebrow {
+  color: #4169d8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.theme-toggle-btn {
+  background: var(--toggle-bg);
+  border: 1px solid var(--toggle-border);
+  color: var(--toggle-text);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+}
+
+h1 {
+  margin: 12px 0 8px;
+  font-size: 30px;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  margin: 0 0 28px;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 label {
   display: block;
-  margin-top: 10px;
+  margin: 18px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-input[type='text'], input[type='email'], textarea {
+input, select, textarea {
+  display: block;
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid var(--input-border);
+  border-radius: 9px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font: inherit;
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
 }
 
-button {
-  padding: 10px 15px;
-  background-color: #007BFF;
-  color: white;
-  border: none;
+input:focus, select:focus, textarea:focus {
+  border-color: #4169d8;
+  box-shadow: 0 0 0 3px rgba(65, 105, 216, 0.15);
+}
+
+textarea {
+  resize: vertical;
+}
+
+button[type="submit"] {
+  width: 100%;
+  margin-top: 22px;
+  padding: 14px;
+  border: 0;
+  border-radius: 9px;
+  color: #fff;
+  background: var(--btn-bg);
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-button:hover {
-  background-color: #0056b3;
+button[type="submit"]:hover {
+  background: var(--btn-hover);
 }
 
-.dark-mode {
-  background-color: #333;
-  color: #fff;
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
 }
 
-.dark-mode label {
-  color: #fff;
+#status {
+  min-height: 20px;
+  margin: 14px 0 0;
+  font-size: 14px;
 }
 
-.dark-mode input[type='checkbox'] {
-  background-color: #fff;
-  border: 1px solid #fff;
+.success {
+  color: #16834a;
 }
 
-.dark-mode input[type='checkbox']:checked {
-  background-color: #007BFF;
-  border-color: #007BFF;
+.error {
+  color: #ef4444;
+}
+
+footer {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .page {
+    margin-top: 20px;
+  }
+  .card {
+    padding: 25px 20px;
+  }
+  h1 {
+    font-size: 26px;
+  }
 }
