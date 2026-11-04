@@ -1,4 +1,4 @@
-<!-- Feedback Page -->
+<!-- Feedback Page with Dark Mode Toggle -->
 <div id='feedback-page'>
   <h1>Feedback</h1>
   <form id='feedback-form'>
@@ -10,6 +10,10 @@
     <textarea id='message' name='message'></textarea><br><br>
     <button type='submit'>Submit</button>
   </form>
+  <div class='dark-mode-toggle'>
+    <label for='dark-mode'>Dark Mode</label>
+    <input type='checkbox' id='dark-mode' name='dark-mode'>
+  </div>
 </div>
 
 <script>
@@ -23,5 +27,9 @@
       .then(response => response.json())
       .then(data => alert(data.message))
       .catch(error => console.error('Error:', error));
+  });
+
+  document.getElementById('dark-mode').addEventListener('change', function() {
+    document.body.classList.toggle('dark-mode');
   });
 </script>
